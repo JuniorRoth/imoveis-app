@@ -1,0 +1,36 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  name       String?
+  email      String     @unique
+  password   String
+  role       String     @default("BUYER")
+  properties Property[] // Only sellers will have properties
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Property {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  image       String
+  status      String         @default("AVAILABLE")
+  location    String
+  bedrooms    Int?
+  bathrooms   Int?
+  area        String?
+  sellerId    Int
+  seller      User           @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
